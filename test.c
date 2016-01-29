@@ -15,14 +15,17 @@ double timespec_diff(struct timespec *a, struct timespec *b);
 
 void start_screen(void);
 void stop_screen(void);
+void clear_screen(void);
 void refresh_screen(void);
+
+int get_ch(void);
 
 int main(int argc, char *argv[])
 {
 	int running = 1;
 
 	struct timespec prev, curr;
-	double mills_left = 0, mills_till_quit = 5000;
+	double mills_left = 0, mills_till_quit = 10000;
 
 	start_screen();
 
@@ -31,6 +34,8 @@ int main(int argc, char *argv[])
 	prev.tv_nsec = curr.tv_nsec;
 
 	printf("Starting the loop\n");
+
+	int entry = 0;
 
 	// The Loop
 	while (running) {
@@ -44,8 +49,39 @@ int main(int argc, char *argv[])
 				running = 0;
 				break;
 			}
+
+			// Process Input
+			while ((entry = get_ch()) != ERR) {
+				switch (entry) {
+				case KEY_UP:
+					// Do Thing
+					addch('^');
+					break;
+				case KEY_DOWN:
+					// Do Thing
+					addch('V');
+					break;
+				case KEY_LEFT:
+					// Do Thing
+					addch('<');
+					break;
+				case KEY_RIGHT:
+					// Do Thing
+					addch('>');
+					break;
+				case KEY_RESIZE:
+					// Do Thing
+					break;
+				default:
+					// Do Thing
+					break;
+				}
+			}
+
 		}
 
+		// Uncomment and put before the render code
+		//clear_screen();
 		refresh_screen();
 
 		prev.tv_sec = curr.tv_sec;
@@ -94,7 +130,17 @@ void stop_screen(void)
 	endwin();
 }
 
+void clear_screen(void)
+{
+	clear();
+}
+
 void refresh_screen(void)
 {
 	refresh();
+}
+
+int get_ch(void)
+{
+	return getch();
 }
